@@ -1,0 +1,72 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.fde.browser'
+    compileSdk 34
+    lintOptions {
+        abortOnError false
+        checkAllWarnings false
+        checkReleaseBuilds false
+        lintConfig file("path/to/custom/lint.xml")
+    }
+
+    testOptions {
+        unitTests.all {
+            enabled = false
+            ignoreFailures = true
+        }
+    }
+
+    ext {
+        appVersion = project.findProperty('appVersion') ?: "1.0.0"
+    }
+    version = appVersion
+
+    defaultConfig {
+        applicationId "com.fde.browser"
+        minSdk 26
+        targetSdk 34
+        versionCode Integer.parseInt(new Date().format("yyyyMMdd"))
+        versionName version
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../openfde.jks")
+            storePassword "keyforcat"
+            keyAlias "rootcloud"
+            keyPassword "keyforcat"
+        }
+    }
+    // ...
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            // ...
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "FdeBrowser.apk"
+        }
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
